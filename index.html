@@ -224,4 +224,657 @@ body {
 @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 @keyframes loadProgress { 0% { width: 0%; } 100% { width: 100%; } }
 @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
-@keyframes slideInRight { from 
+@keyframes slideInRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes slideIn { from { opacity: 0; transform: translateX(-15px); } to { opacity: 1; transform: translateX(0); } }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg-card); }
+::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
+
+@media (max-width: 400px) {
+    .logo-text { font-size: 2rem; }
+    .balance-amount { font-size: 1.7rem; }
+    .action-icon { width: 40px; height: 40px; font-size: 1.1rem; }
+    .action-label { font-size: 0.65rem; }
+    .detail-value { font-size: 0.85rem; }
+    .stat-num { font-size: 1rem; }
+    .auth-title { font-size: 1.5rem; }
+}
+    </style>
+</head>
+<body>
+        <!-- Splash -->
+    <div class="splash-screen" id="splash">
+        <div class="splash-content">
+            <div class="logo-container">
+                <div class="logo-icon">🎁</div>
+                <h1 class="logo-text">GIVEAWAY<span class="logo-accent">HUB</span></h1>
+            </div>
+            <div class="loading-bar"><div class="loading-progress"></div></div>
+            <p class="splash-subtitle">Loading your rewards...</p>
+        </div>
+    </div>
+
+    <!-- Auth Screen -->
+    <div class="auth-screen" id="authScreen" style="display:none;">
+        <div class="auth-logo">🎁</div>
+        <div class="auth-title">GIVEAWAY<span>Hub</span></div>
+        <p class="auth-subtitle">Win instant cash & airtime rewards</p>
+        <div class="auth-card">
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchAuth('login')" id="tabLogin">Login</button>
+                <button class="auth-tab" onclick="switchAuth('signup')" id="tabSignup">Sign Up</button>
+            </div>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="loginEmail" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" id="loginPassword" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn-submit">Login</button>
+            </form>
+            <form id="signupForm" onsubmit="handleSignup(event)" style="display:none;">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-input" id="signupName" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="signupEmail" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" id="signupPassword" placeholder="Create a password" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Bank Name</label>
+                    <select class="form-select" id="signupBank" required>
+                        <option value="">Select your bank</option>
+                        <option value="OPay">OPay</option>
+                        <option value="Kuda">Kuda</option>
+                        <option value="Palmpay">Palmpay</option>
+                        <option value="Moniepoint">Moniepoint</option>
+                        <option value="GTBank">GTBank</option>
+                        <option value="First Bank">First Bank</option>
+                        <option value="Access Bank">Access Bank</option>
+                        <option value="UBA">UBA</option>
+                        <option value="Zenith Bank">Zenith Bank</option>
+                        <option value="FCMB">FCMB</option>
+                        <option value="Fidelity Bank">Fidelity Bank</option>
+                        <option value="Union Bank">Union Bank</option>
+                        <option value="EcoBank">EcoBank</option>
+                        <option value="Stanbic IBTC">Stanbic IBTC</option>
+                        <option value="Polaris Bank">Polaris Bank</option>
+                        <option value="Wema Bank">Wema Bank</option>
+                        <option value="Sterling Bank">Sterling Bank</option>
+                        <option value="Keystone Bank">Keystone Bank</option>
+                        <option value="Jaiz Bank">Jaiz Bank</option>
+                        <option value="Unity Bank">Unity Bank</option>
+                        <option value="Providus Bank">Providus Bank</option>
+                        <option value="Titan Trust Bank">Titan Trust Bank</option>
+                        <option value="Globus Bank">Globus Bank</option>
+                        <option value="Premium Trust Bank">Premium Trust Bank</option>
+                        <option value="Lotus Bank">Lotus Bank</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Account Number</label>
+                    <input type="text" class="form-input" id="signupAccNum" placeholder="Enter account number" maxlength="10" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Account Name</label>
+                    <input type="text" class="form-input" id="signupAccName" placeholder="Enter account name" required>
+                </div>
+                <button type="submit" class="btn-submit">Create Account</button>
+            </form>
+        </div>
+        <p class="auth-footer">By continuing, you agree to our Terms of Service</p>
+    </div>
+
+    <!-- Main App -->
+    <div class="main-app" id="mainApp" style="display:none;">
+        <div class="alert-banner" id="alertBanner">
+            <span class="alert-icon">🔔</span>
+            <span class="alert-text">ProAlert: Giveaway entries now verify in under 30 seconds • Instant payouts active 24/7 • Use OPay for fastest transfers</span>
+            <button class="alert-close" onclick="closeAlert()">×</button>
+        </div>
+
+        <header class="app-header">
+            <div class="header-logo">
+                <span class="header-icon">🎁</span>
+                <span class="header-text">GIVEAWAY<span class="accent">HUB</span></span>
+            </div>
+            <div class="header-actions">
+                <div class="header-badge">LIVE</div>
+                <div class="menu-btn" onclick="toggleMenu()">☰</div>
+            </div>
+        </header>
+
+        <div class="side-menu" id="sideMenu">
+            <div class="menu-overlay" onclick="toggleMenu()"></div>
+            <div class="menu-panel">
+                <div class="menu-header">
+                    <span class="menu-icon">🎁</span>
+                    <span>GIVEAWAYHUB</span>
+                </div>
+                <nav class="menu-nav">
+                    <a href="#" class="menu-item active" onclick="showPage('dashboard'); toggleMenu(); return false;">
+                        <span class="menu-item-icon">🏠</span><span>Dashboard</span>
+                    </a>
+                    <a href="#" class="menu-item" onclick="showPage('account'); toggleMenu(); return false;">
+                        <span class="menu-item-icon">💳</span><span>My Account</span>
+                    </a>
+                    <a href="#" class="menu-item" onclick="showPage('transactions'); toggleMenu(); return false;">
+                        <span class="menu-item-icon">📊</span><span>Transactions</span>
+                    </a>
+                    <a href="#" class="menu-item" onclick="showPage('giveaways'); toggleMenu(); return false;">
+                        <span class="menu-item-icon">🎉</span><span>Active Giveaways</span>
+                    </a>
+                    <a href="#" class="menu-item" onclick="showPage('referrals'); toggleMenu(); return false;">
+                        <span class="menu-item-icon">👥</span><span>Referrals</span>
+                    </a>
+                    <a href="#" class="menu-item" onclick="logout(); toggleMenu(); return false;">
+                        <span class="menu-item-icon">🚪</span><span>Logout</span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <main class="app-content" id="mainContent">
+            <!-- Dashboard -->
+            <div id="pageDashboard">
+                <section class="profile-card">
+                    <div class="profile-avatar" id="dashAvatar">J</div>
+                    <div class="profile-info">
+                        <h2 class="profile-name" id="dashName">Joseph Ohiemi</h2>
+                        <span class="profile-type">Personal Account</span>
+                    </div>
+                    <div class="profile-status">
+                        <span class="status-dot"></span>
+                        <span class="status-text">Active</span>
+                    </div>
+                </section>
+
+                <section class="balance-section">
+                    <div class="balance-card">
+                        <div class="balance-label">Current Balance</div>
+                        <div class="balance-amount" id="balanceAmount">₦200,000</div>
+                        <div class="balance-actions">
+                            <button class="balance-btn btn-withdraw" onclick="showWithdraw()">
+                                <span>⬆️</span><span>Withdraw</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="target-section">
+                    <div class="target-header">
+                        <span class="target-label">Daily Spending Target</span>
+                        <span class="target-percent" id="targetPercent">68%</span>
+                    </div>
+                    <div class="target-bar">
+                        <div class="target-progress" id="targetProgress" style="width:0%"></div>
+                    </div>
+                </section>
+
+                <section class="quick-actions">
+                    <a href="#" class="action-item" onclick="showFeature('buy')">
+                        <div class="action-icon">🛒</div><span class="action-label">Buy</span>
+                    </a>
+                    <a href="#" class="action-item" onclick="showFeature('code')">
+                        <div class="action-icon">🎫</div><span class="action-label">Code</span>
+                    </a>
+                    <a href="#" class="action-item" onclick="showService('airtime')">
+                        <div class="action-icon">📱</div><span class="action-label">Airtime</span>
+                    </a>
+                    <a href="#" class="action-item" onclick="showService('data')">
+                        <div class="action-icon">📡</div><span class="action-label">Data</span>
+                    </a>
+                    <a href="#" class="action-item" onclick="showService('platform')">
+                        <div class="action-icon">🌐</div><span class="action-label">Platform</span>
+                    </a>
+                    <a href="#" class="action-item" onclick="showService('help')">
+                        <div class="action-icon">❓</div><span class="action-label">Help</span>
+                    </a>
+                    <a href="#" class="action-item" onclick="showFeature('secure')">
+                        <div class="action-icon">🔒</div><span class="action-label">Secure</span>
+                    </a>
+                    <a href="#" class="action-item" onclick="showFeature('more')">
+                        <div class="action-icon">➕</div><span class="action-label">More</span>
+                    </a>
+                </section>
+
+                <section class="payment-section">
+                    <div class="section-header">
+                        <h3>💳 Payment Details</h3>
+                        <p>Send entry fees or receive winnings instantly</p>
+                    </div>
+                    <div class="payment-card">
+                        <div class="card-shine"></div>
+                        <div class="bank-logo">
+                            <div class="bank-icon">OP</div>
+                            <span class="bank-name">OPay</span>
+                        </div>
+                        <div class="account-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Account Name</span>
+                                <span class="detail-value" id="accName">Joseph Ohiemi</span>
+                                <button class="copy-btn" onclick="copyText('accName')">📋</button>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Account Number</span>
+                                <span class="detail-value" id="accNum">9153082021</span>
+                                <button class="copy-btn" onclick="copyText('accNum')">📋</button>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Bank</span>
+                                <span class="detail-value">OPay</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <span class="verified-badge">✓ Verified</span>
+                            <span class="secure-badge">🔒 Secure</span>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <a href="https://opay.ng" target="_blank" class="btn btn-primary">
+                            <span>📲</span>Open OPay
+                        </a>
+                        <button class="btn btn-secondary" onclick="shareDetails()">
+                            <span>🔗</span>Share
+                        </button>
+                    </div>
+                </section>
+
+                <section class="stats-section">
+                    <div class="stats-row">
+                        <div class="stat-card">
+                            <span class="stat-num" id="winnersCount">12,847</span>
+                            <span class="stat-label">Winners</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-num" id="amountGiven">₦4.2M+</span>
+                            <span class="stat-label">Given Away</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-num" id="onlineNow">2,341</span>
+                            <span class="stat-label">Online Now</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="recent-winners">
+                    <div class="section-header-row">
+                        <h3>🏆 Recent Winners</h3>
+                        <a href="#" class="view-all">View All →</a>
+                    </div>
+                    <div class="winners-ticker" id="winnersTicker"></div>
+                </section>
+
+                <section class="how-it-works">
+                    <h3>🚀 How It Works</h3>
+                    <div class="steps">
+                        <div class="step">
+                            <div class="step-num">1</div>
+                            <div class="step-content">
+                                <h4>Send Entry</h4>
+                                <p>Transfer your entry fee to the account above</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">2</div>
+                            <div class="step-content">
+                                <h4>Screenshot & Send</h4>
+                                <p>Share proof of payment via WhatsApp</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">3</div>
+                            <div class="step-content">
+                                <h4>Get Rewarded</h4>
+                                <p>Winners are picked & paid instantly!</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="support-section">
+                    <div class="support-card">
+                        <div class="support-icon">💬</div>
+                        <div class="support-content">
+                            <h4>Customer Relations</h4>
+                            <p>Active 24/7 for giveaway support and verification</p>
+                        </div>
+                        <a href="https://wa.me/2349153082021" class="support-btn" target="_blank">
+                            <span>Chat</span><span>→</span>
+                        </a>
+                    </div>
+                </section>
+            </div>
+
+            <!-- My Account Page -->
+            <div id="pageAccount" style="display:none;">
+                <h2 style="margin-bottom:1.5rem;font-size:1.3rem;">💳 My Account</h2>
+                <div class="payment-card" style="margin-bottom:1.5rem;">
+                    <div class="section-header" style="text-align:left;margin-bottom:1rem;">
+                        <h3>Your Bank Details</h3>
+                        <p style="font-size:0.8rem;">Used for withdrawals and service payments</p>
+                    </div>
+                    <div class="account-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Bank Name</span>
+                            <span class="detail-value" id="userBank">-</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Account Number</span>
+                            <span class="detail-value" id="userAccNum">-</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Account Name</span>
+                            <span class="detail-value" id="userAccName">-</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Email</span>
+                            <span class="detail-value" id="userEmail">-</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-danger" onclick="logout()" style="width:100%;">🚪 Logout</button>
+            </div>
+
+            <div id="pageTransactions" style="display:none;">
+                <h2 style="margin-bottom:1.5rem;font-size:1.3rem;">📊 Transactions</h2>
+                <div class="payment-card">
+                    <p style="text-align:center;color:var(--text-muted);padding:2rem 0;">No transactions yet. Start participating in giveaways!</p>
+                </div>
+            </div>
+            <div id="pageGiveaways" style="display:none;">
+                <h2 style="margin-bottom:1.5rem;font-size:1.3rem;">🎉 Active Giveaways</h2>
+                <div class="payment-card">
+                    <p style="text-align:center;color:var(--text-muted);padding:2rem 0;">New giveaways coming soon. Stay tuned!</p>
+                </div>
+            </div>
+            <div id="pageReferrals" style="display:none;">
+                <h2 style="margin-bottom:1.5rem;font-size:1.3rem;">👥 Referrals</h2>
+                <div class="payment-card">
+                    <p style="text-align:center;color:var(--text-muted);padding:2rem 0;">Invite friends and earn bonuses!</p>
+                </div>
+            </div>
+        </main>
+
+        <nav class="bottom-nav">
+            <a href="#" class="nav-item active" onclick="showPage('dashboard'); return false;">
+                <span class="nav-icon">🏠</span><span class="nav-label">Home</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showPage('account'); return false;">
+                <span class="nav-icon">💳</span><span class="nav-label">Wallet</span>
+            </a>
+            <a href="#" class="nav-item nav-center">
+                <div class="nav-center-btn">🎁</div>
+            </a>
+            <a href="#" class="nav-item" onclick="showPage('transactions'); return false;">
+                <span class="nav-icon">📊</span><span class="nav-label">History</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showPage('account'); return false;">
+                <span class="nav-icon">👤</span><span class="nav-label">Profile</span>
+            </a>
+        </nav>
+    </div>
+
+    <div class="toast" id="toast">Copied to clipboard!</div>
+
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
+    <div class="modal" id="modal">
+        <div class="modal-header">
+            <h3 id="modalTitle">Feature</h3>
+            <button class="modal-close" onclick="closeModal()">×</button>
+        </div>
+        <div class="modal-body" id="modalBody">
+            <p>Coming soon!</p>
+        </div>
+    </div>
+
+<script>
+var currentUser = null;
+
+setTimeout(function() {
+    document.getElementById('splash').style.display = 'none';
+    var saved = localStorage.getItem('giveawayhub_user');
+    if (saved) {
+        currentUser = JSON.parse(saved);
+        showMainApp();
+    } else {
+        document.getElementById('authScreen').style.display = 'flex';
+    }
+}, 3000);
+
+function switchAuth(type) {
+    document.getElementById('tabLogin').classList.toggle('active', type === 'login');
+    document.getElementById('tabSignup').classList.toggle('active', type === 'signup');
+    document.getElementById('loginForm').style.display = type === 'login' ? 'block' : 'none';
+    document.getElementById('signupForm').style.display = type === 'signup' ? 'block' : 'none';
+}
+
+function handleSignup(e) {
+    e.preventDefault();
+    var user = {
+        name: document.getElementById('signupName').value,
+        email: document.getElementById('signupEmail').value,
+        password: document.getElementById('signupPassword').value,
+        bank: document.getElementById('signupBank').value,
+        accNum: document.getElementById('signupAccNum').value,
+        accName: document.getElementById('signupAccName').value,
+        balance: 200000
+    };
+    localStorage.setItem('giveawayhub_user', JSON.stringify(user));
+    currentUser = user;
+    showToast('Account created! Welcome to GiveawayHub');
+    showMainApp();
+}
+
+function handleLogin(e) {
+    e.preventDefault();
+    var saved = localStorage.getItem('giveawayhub_user');
+    if (!saved) { showToast('No account found. Please sign up.'); return; }
+    var user = JSON.parse(saved);
+    var email = document.getElementById('loginEmail').value;
+    var pass = document.getElementById('loginPassword').value;
+    if (user.email === email && user.password === pass) {
+        currentUser = user;
+        showToast('Welcome back!');
+        showMainApp();
+    } else {
+        showToast('Invalid email or password');
+    }
+}
+
+function logout() {
+    currentUser = null;
+    showToast('Logged out successfully');
+    location.reload();
+}
+
+function showMainApp() {
+    document.getElementById('authScreen').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'block';
+    document.getElementById('dashName').textContent = currentUser.name;
+    document.getElementById('dashAvatar').textContent = currentUser.name.charAt(0).toUpperCase();
+    document.getElementById('balanceAmount').textContent = '₦' + currentUser.balance.toLocaleString();
+    document.getElementById('userBank').textContent = currentUser.bank;
+    document.getElementById('userAccNum').textContent = currentUser.accNum;
+    document.getElementById('userAccName').textContent = currentUser.accName;
+    document.getElementById('userEmail').textContent = currentUser.email;
+}
+
+function showPage(page) {
+    var pages = ['pageDashboard', 'pageAccount', 'pageTransactions', 'pageGiveaways', 'pageReferrals'];
+    pages.forEach(function(p) { document.getElementById(p).style.display = 'none'; });
+    document.getElementById('page' + page.charAt(0).toUpperCase() + page.slice(1)).style.display = 'block';
+    document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
+    if (page === 'dashboard') document.querySelectorAll('.nav-item')[0].classList.add('active');
+    if (page === 'account') document.querySelectorAll('.nav-item')[1].classList.add('active');
+    if (page === 'transactions') document.querySelectorAll('.nav-item')[3].classList.add('active');
+}
+
+function closeAlert() { document.getElementById('alertBanner').classList.add('hidden'); }
+function toggleMenu() { document.getElementById('sideMenu').classList.toggle('open'); }
+
+function copyText(elementId) {
+    var text = document.getElementById(elementId).innerText;
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(function() { showToast('Copied!'); });
+    } else {
+        var ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); showToast('Copied!');
+    }
+}
+
+function shareDetails() {
+    var text = 'GIVEAWAYHUB Payment Details:\nAccount Name: Joseph Ohiemi\nAccount Number: 9153082021\nBank: OPay';
+    if (navigator.share) { navigator.share({ title: 'GiveawayHub', text: text }); }
+    else if (navigator.clipboard) { navigator.clipboard.writeText(text).then(function() { showToast('Details copied!'); }); }
+}
+
+function showToast(message) {
+    var toast = document.getElementById('toast'); toast.textContent = message; toast.classList.add('show');
+    setTimeout(function() { toast.classList.remove('show'); }, 2500);
+}
+
+function showWithdraw() {
+    document.getElementById('modalTitle').textContent = 'Withdraw Funds';
+    document.getElementById('modalBody').innerHTML = 
+        '<p style="margin-bottom:1rem;">Enter your withdrawal code below. Don\'t have one? Buy a code for <strong style="color:var(--accent);">₦5,500</strong>.</p>' +
+        '<div class="form-group"><label class="form-label">Withdrawal Code</label><input type="text" class="form-input" id="withdrawCode" placeholder="Enter code (e.g. GHW1234)"></div>' +
+        '<div style="display:flex;gap:0.75rem;margin-top:1rem;">' +
+        '<button class="btn btn-primary" onclick="processWithdraw()" style="flex:1;">Withdraw</button>' +
+        '<button class="btn btn-secondary" onclick="showBuyCode()" style="flex:1;">Buy Code</button>' +
+        '</div>' +
+        '<button class="btn btn-danger" onclick="closeModal()" style="width:100%;margin-top:0.75rem;background:transparent;color:var(--text-muted);border:1px solid var(--border);">Cancel</button>';
+    document.getElementById('modalOverlay').classList.add('show');
+    document.getElementById('modal').classList.add('show');
+}
+    function showBuyCode() {
+    document.getElementById('modalTitle').textContent = 'Buy Withdrawal Code';
+    document.getElementById('modalBody').innerHTML = 
+        '<p>Send <strong style="color:var(--accent);">₦5,500</strong> to the account below to get your withdrawal code.</p>' +
+        '<div class="modal-price">₦5,500</div>' +
+        '<div style="background:rgba(0,0,0,0.2);border-radius:12px;padding:1rem;border:1px solid var(--border);margin:1rem 0;">' +
+        '<div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;"><span style="color:var(--text-muted);font-size:0.8rem;">Account Name</span><span style="font-weight:700;">Joseph Ohiemi</span></div>' +
+        '<div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;"><span style="color:var(--text-muted);font-size:0.8rem;">Account Number</span><span style="font-weight:700;font-family:monospace;">9153082021</span></div>' +
+        '<div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);font-size:0.8rem;">Bank</span><span style="font-weight:700;color:var(--opay);">OPay</span></div>' +
+        '</div>' +
+        '<div class="modal-note">✅ After payment, send screenshot via WhatsApp. We\'ll send your code within 5 minutes.</div>' +
+        '<a href="https://wa.me/2349153082021" target="_blank" class="btn btn-primary" style="width:100%;margin-top:1rem;display:flex;">💬 Send Screenshot on WhatsApp</a>' +
+        '<button class="btn btn-secondary" onclick="closeModal()" style="width:100%;margin-top:0.75rem;">Cancel</button>';
+}
+
+function processWithdraw() {
+    var code = document.getElementById('withdrawCode').value.trim();
+    if (!code) { showToast('Please enter a code'); return; }
+    showToast('Processing...');
+    setTimeout(function() {
+        closeModal();
+        showToast('Invalid or expired code. Buy a new code to withdraw.');
+    }, 1500);
+}
+
+function showService(service) {
+    var titles = { airtime: 'Buy Airtime', data: 'Buy Data', platform: 'Platform Access', help: 'Support Service' };
+    var descs = {
+        airtime: 'Send payment for airtime. We\'ll top up your line once confirmed.',
+        data: 'Send payment for data bundle. We\'ll subscribe your line once confirmed.',
+        platform: 'Send payment for platform access. We\'ll activate your account.',
+        help: 'Send payment for premium support. We\'ll assist you immediately.'
+    };
+    document.getElementById('modalTitle').textContent = titles[service];
+    document.getElementById('modalBody').innerHTML = 
+        '<p>' + descs[service] + '</p>' +
+        '<div style="margin:1.5rem 0;">' +
+        '<p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.75rem;">Send payment to your registered account:</p>' +
+        '<div style="background:rgba(0,0,0,0.2);border-radius:12px;padding:1rem;border:1px solid var(--border);">' +
+        '<div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;"><span style="color:var(--text-muted);font-size:0.8rem;">Bank</span><span style="font-weight:700;">' + (currentUser ? currentUser.bank : '-') + '</span></div>' +
+        '<div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;"><span style="color:var(--text-muted);font-size:0.8rem;">Account Number</span><span style="font-weight:700;font-family:monospace;">' + (currentUser ? currentUser.accNum : '-') + '</span></div>' +
+        '<div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);font-size:0.8rem;">Account Name</span><span style="font-weight:700;">' + (currentUser ? currentUser.accName : '-') + '</span></div>' +
+        '</div>' +
+        '</div>' +
+        '<p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:1rem;">After sending, screenshot and send via WhatsApp for confirmation.</p>' +
+        '<a href="https://wa.me/2349153082021" target="_blank" class="btn btn-primary" style="width:100%;display:flex;margin-bottom:0.75rem;">💬 Send Screenshot on WhatsApp</a>' +
+        '<button class="btn btn-secondary" onclick="closeModal()" style="width:100%;">Cancel</button>';
+    document.getElementById('modalOverlay').classList.add('show');
+    document.getElementById('modal').classList.add('show');
+}
+
+function showFeature(feature) {
+    var titles = { buy: 'Buy', code: 'Code', secure: 'Security', more: 'More Features' };
+    var bodies = {
+        buy: 'Browse and purchase giveaway entries, airtime, data bundles, and more.',
+        code: 'Generate and verify withdrawal codes. Codes cost ₦5,500 and are delivered instantly after payment.',
+        secure: 'Your security is our priority. Enable 2FA, manage devices, and review login history.',
+        more: 'Discover referral bonuses, leaderboard, VIP tiers, and exclusive giveaways.'
+    };
+    document.getElementById('modalTitle').textContent = titles[feature] || 'Feature';
+    document.getElementById('modalBody').innerHTML = '<p>' + (bodies[feature] || 'Coming soon!') + '</p>';
+    document.getElementById('modalOverlay').classList.add('show');
+    document.getElementById('modal').classList.add('show');
+}
+
+function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('show');
+    document.getElementById('modal').classList.remove('show');
+}
+
+function updateStats() {
+    var winnersEl = document.getElementById('winnersCount');
+    var onlineEl = document.getElementById('onlineNow');
+    if (winnersEl && onlineEl) {
+        setInterval(function() {
+            var cw = parseInt(winnersEl.textContent.replace(/,/g, ''));
+            winnersEl.textContent = (cw + Math.floor(Math.random() * 3)).toLocaleString();
+            var co = parseInt(onlineEl.textContent.replace(/,/g, ''));
+            onlineEl.textContent = (co + Math.floor(Math.random() * 11) - 5).toLocaleString();
+        }, 5000);
+    }
+}
+
+var winners = [
+    { name: 'Adebola K.', amount: '₦5,000', time: '2 min ago' },
+    { name: 'Chinedu O.', amount: '₦10,000', time: '5 min ago' },
+    { name: 'Fatima A.', amount: '₦3,000', time: '8 min ago' },
+    { name: 'Emmanuel T.', amount: '₦15,000', time: '12 min ago' },
+    { name: 'Blessing M.', amount: '₦7,500', time: '15 min ago' },
+    { name: 'Ibrahim S.', amount: '₦20,000', time: '18 min ago' },
+    { name: 'Grace O.', amount: '₦5,000', time: '22 min ago' },
+    { name: 'David K.', amount: '₦12,000', time: '25 min ago' },
+];
+
+function renderWinners() {
+    var ticker = document.getElementById('winnersTicker');
+    if (ticker) {
+        ticker.innerHTML = winners.map(function(w) {
+            return '<div class="winner-item"><div class="winner-info"><div class="winner-avatar">' + w.name.charAt(0) + '</div><div><div class="winner-name">' + w.name + '</div><div class="winner-time">' + w.time + '</div></div></div><div class="winner-amount">' + w.amount + '</div></div>';
+        }).join('');
+    }
+}
+
+function startWinnerTicker() {
+    var names = ['Sarah J.', 'Michael A.', 'Precious E.', 'John D.', 'Amaka N.', 'Tunde B.', 'Kemi F.', 'Segun R.', 'Ngozi P.', 'Abdul H.'];
+    var amounts = ['₦5,000', '₦10,000', '₦3,000', '₦15,000', '₦8,000', '₦25,000', '₦6,000', '₦18,000'];
+    setInterval(function() {
+        winners.unshift({ name: names[Math.floor(Math.random() * names.length)], amount: amounts[Math.floor(Math.random() * amounts.length)], time: 'Just now' });
+        if (winners.length > 8) winners.pop();
+        renderWinners();
+    }, 8000);
+}
+
+function animateTarget() {
+    var p = document.getElementById('targetProgress');
+    if (p) setTimeout(function() { p.style.width = '68%'; }, 500);
+}
+
+renderWinners(); updateStats(); startWinnerTicker(); animateTarget();
+</script>
+</body>
+</html>
